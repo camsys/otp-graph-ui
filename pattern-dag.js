@@ -99,16 +99,15 @@ function update(route, direction, date, time) {
         y
       }) => `translate(${x*width}, ${y*height})`);
 
-    nodes.append('rect')
-      .attr('width', 300)
-      .attr('height', 40)
+    nodes.append('circle')
+      .attr('r',15)
       .attr('fill', 'white')
       .attr('stroke', 'black')
-      .attr('transform', 'translate(-150, -20)');
+      .attr('transform', 'translate(0, 0)');
 
     // Add text, which screws up measureement
     //nodes.append('text').text(d => d.data.attributes.name + ' ' + d.data.stopId + ' ' + d.data.attributes.cluster).attr('text-anchor', 'middle').attr('alignment-baseline', 'middle');
-    nodes.append('text').text(d => d.data.attributes.name).attr('text-anchor', 'middle').attr('alignment-baseline', 'middle');
+    nodes.append('text').text(d => d.data.attributes.name).attr('text-anchor', 'right').attr('alignment-baseline', 'middle').attr("x",30);
 
   });
 }
