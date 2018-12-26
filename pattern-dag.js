@@ -101,10 +101,11 @@ function update(route, direction, date, time) {
 
     nodes.append('circle')
       .attr('r',15)
-      .attr('fill', 'white')
+      .attr('fill', d => d.data.nodeAttribute.color)
       .attr('stroke', 'black')
       .attr('transform', 'translate(0, 0)');
 
+    console.log(d => d.data.attributes.name);
     // Add text, which screws up measureement
     //nodes.append('text').text(d => d.data.attributes.name + ' ' + d.data.stopId + ' ' + d.data.attributes.cluster).attr('text-anchor', 'middle').attr('alignment-baseline', 'middle');
     nodes.append('text').text(d => d.data.attributes.name).attr('text-anchor', 'right').attr('alignment-baseline', 'middle').attr("x",30);
