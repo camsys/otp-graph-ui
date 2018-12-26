@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>D3-Dag -  Topological</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.7.0/d3.min.js"></script>
+<script src="https://unpkg.com/d3-dag@0.1.2/dist/d3-dag.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="pattern-dag.js"></script>
+<div class="controls">
+  <div>
+    <label for="route">Routes: </label> <input id="route" type="text" value="MTASBWY:1"/>
+  </div>
+  <div>
+    <span>Direction: </span>
+    <input type="radio" name="direction" id="direction0" value="0" checked="checked"/> <label for="direction0">0</label>
+    <input type="radio" name="direction" id="direction1" value="1" /> <label for="direction1">1</label>
+  </div>
+  <div>
+    <label for="mydatetime">Date/time: </label>
+    <input class="flatpickr" type="text" id="mydatetime" placeholder="Select time or leave blank"/>
+  </div>
+  <div>
+    <input type="button" id="submit" value="Submit" />
+  </div>
+</div>
+
+<div style="margin: 20px;">
+  <div id="stops"></div>
+</div>
+</body>
