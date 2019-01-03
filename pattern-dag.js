@@ -25,10 +25,10 @@ function update(route, direction, date, time) {
       url += "&date=" + date + "&time=" + time;
   } 
 
-
   d3.json(url).then((data) => {
 
     var successorsArray  = [];
+    var routeTypeMap  = buildRouteTypeMap(data);
    
     const dag = d3.dratify()
      .id(d => d.id)
@@ -57,8 +57,6 @@ function update(route, direction, date, time) {
 
     const width = 800;
     
-
-    var dash = "0";
 
     d3.selectAll("svg").remove();
     
@@ -96,8 +94,9 @@ function update(route, direction, date, time) {
       .attr('interpolate', 'linear')
       .attr('fill', 'none')
       .attr('stroke', 'black')
-      .style("stroke-dasharray", ("3", dash)) 
+      .style("stroke-dasharray", ("3", d => dash(d))) 
       .attr('stroke-width', 1)
+
 
     const nodes = g.append('g')
       .selectAll('g')
@@ -126,7 +125,6 @@ function update(route, direction, date, time) {
       .attr('r',15)
       .attr('stroke', "black")
       .attr('fill', function(d, i) {
-        console.log(d);
         if(d.data.attribute.color.length > 1) //Stops with more than 1 color
           return "url(#grad" + d.id + ")"; 
         else
@@ -134,7 +132,30 @@ function update(route, direction, date, time) {
       } )
       .attr('transform', 'translate(0, 0)');
 
-    nodes.append('text').text(d => d.data.oldAttributes.name).attr('text-anchor', 'right').attr('alignment-baseline', 'middle').attr("x",30);
+    nodes.append('text').text(d => d.data.attribute.name).attr('text-anchor', 'right').attr('alignment-baseline', 'middle').attr("x",30);
+
+    // Determine if the link should be a dashed line (shuttle) or solid line (subway)
+    function dash(data){
+      routeType = routeTypeMap[data.target.id + 'to' + data.source.id];
+      if(routeType == 1)
+        return 0
+      else 
+        return 3
+      end
+    }
+
+    // Build a map of all the route types between each node
+    function buildRouteTypeMap(data){
+      map = {}
+      data.nodes.forEach(function(entry){
+        entry.successors.forEach(function(s){
+          map[entry.id + 'to' + s.id] =  s.routeType;
+        })
+      });
+      return map;
+
+    }
+
 
   });
 }
