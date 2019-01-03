@@ -20,15 +20,19 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 function update(route, direction, date, time) {
   // based on https://jsfiddle.net/ye2xanf9/77/
-  var url = "http://localhost:8080/otp/routers/default/patternGraph?routeId=" + route + "&directionId=" + direction;
+  var url = "http://localhost:8080/otp/routers/default/patternGraph?routeIds=" + route + "&directionId=" + direction;
   if (date != null && time != null) {
       url += "&date=" + date + "&time=" + time;
   } 
+
+
   d3.json(url).then((data) => {
 
+    var successorsArray  = [];
+   
     const dag = d3.dratify()
-     .id(d => d.stopId)
-     .parentIds(d => d.successors)
+     .id(d => d.id)
+     .parentIds(d => d.successors.map(function(x) { return x.id }))
      (data.nodes)
 
     d3.sugiyama()(dag);
@@ -46,12 +50,15 @@ function update(route, direction, date, time) {
           maxHeight = dag.children[i].height().value;
         }
       }
-      height = maxHeight * 80;
+      height = maxHeight * 50;
     }else{ //This DAG has only one root
-      height = dag.height().value * 80;
+      height = dag.height().value * 50;
     }
 
     const width = 800;
+    
+
+    var dash = "0";
 
     d3.selectAll("svg").remove();
     
@@ -86,8 +93,11 @@ function update(route, direction, date, time) {
             x: target.x,
             y: target.y
           }])))
+      .attr('interpolate', 'linear')
       .attr('fill', 'none')
       .attr('stroke', 'black')
+      .style("stroke-dasharray", ("3", dash)) 
+      .attr('stroke-width', 1)
 
     const nodes = g.append('g')
       .selectAll('g')
@@ -99,15 +109,32 @@ function update(route, direction, date, time) {
         y
       }) => `translate(${x*width}, ${y*height})`);
 
+
+    //Create one gradient for each stop. TODO: We really only need to do this for stops with > 1 color.
+    var colorTypes = [];
+    descendants.forEach(function(e){
+      colorTypes.push({"color1": e.data.attribute.color[0], "color2": e.data.attribute.color[1], "name":"grad"+e.id})
+    });
+    var grad = g.append("defs")
+      .selectAll("linearGradient").data(colorTypes).enter()
+     .append("linearGradient").attr("id", d => d.name).attr("x1", "0%").attr("x2", "0%").attr("y1", "100%").attr("y2", "0%");
+    grad.append("stop").attr("offset", "50%").style("stop-color", d => d.color1);
+    grad.append("stop").attr("offset", "50%").style("stop-color", d => d.color2);
+
+
     nodes.append('circle')
       .attr('r',15)
-      .attr('fill', d => d.data.nodeAttribute.color)
-      .attr('stroke', 'black')
+      .attr('stroke', "black")
+      .attr('fill', function(d, i) {
+        console.log(d);
+        if(d.data.attribute.color.length > 1) //Stops with more than 1 color
+          return "url(#grad" + d.id + ")"; 
+        else
+          return d.data.attribute.color // Stops with 1 Color
+      } )
       .attr('transform', 'translate(0, 0)');
 
-    // Add text, which screws up measureement
-    //nodes.append('text').text(d => d.data.attributes.name + ' ' + d.data.stopId + ' ' + d.data.attributes.cluster).attr('text-anchor', 'middle').attr('alignment-baseline', 'middle');
-    nodes.append('text').text(d => d.data.attributes.name).attr('text-anchor', 'right').attr('alignment-baseline', 'middle').attr("x",30);
+    nodes.append('text').text(d => d.data.oldAttributes.name).attr('text-anchor', 'right').attr('alignment-baseline', 'middle').attr("x",30);
 
   });
 }
