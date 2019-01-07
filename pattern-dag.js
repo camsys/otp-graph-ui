@@ -124,6 +124,7 @@ function update(route, direction, date, time) {
     nodes.append('circle')
       .attr('r',15)
       .attr('stroke', "black")
+      .attr("stroke-width", d => boldIfTerminal(d))
       .attr('fill', function(d, i) {
         if(d.data.attribute.color.length > 1) //Stops with more than 1 color
           return "url(#grad" + d.id + ")"; 
@@ -132,7 +133,7 @@ function update(route, direction, date, time) {
       } )
       .attr('transform', 'translate(0, 0)');
 
-    nodes.append('text').text(d => d.data.attribute.name).attr('text-anchor', 'right').attr('alignment-baseline', 'middle').attr("x",30);
+    nodes.append('text').text(d => d.data.attribute.name + ' (' + d.data.attribute.routes + ')').attr('text-anchor', 'right').attr('alignment-baseline', 'middle').attr("x",30);
 
     // Determine if the link should be a dashed line (shuttle) or solid line (subway)
     function dash(data){
@@ -154,6 +155,13 @@ function update(route, direction, date, time) {
       });
       return map;
 
+    }
+
+    function boldIfTerminal(data){
+      if(data.data.attribute.isTerminal == true)
+        return 5;
+      else
+        return 1;
     }
 
 
