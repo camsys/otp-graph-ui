@@ -121,7 +121,27 @@ function update(route, direction, date, time) {
     grad.append("stop").attr("offset", "50%").style("stop-color", d => d.color2);
 
 
-    nodes.append('circle')
+    nodes.append('circle').filter(function(d) { return isShuttle(d) })
+      .attr('width', 30) 
+      .attr('height', 30)
+      .attr('x',-15)
+      .attr('y',-15)
+      .attr('r',15)
+      .attr('stroke', "black")
+      .attr("stroke-width", d => boldIfTerminal(d))
+      .attr('fill', function(d, i) {
+        if(d.data.attribute.color.length > 1) //Stops with more than 1 color
+          return "url(#grad" + d.id + ")"; 
+        else
+          return d.data.attribute.color // Stops with 1 Color
+      } )
+      .attr('transform', 'translate(0, 0)');
+
+    nodes.append('rect').filter(function(d) { return !isShuttle(d) })
+      .attr('width', 30) 
+      .attr('height', 30)
+      .attr('x',-15)
+      .attr('y',-15)
       .attr('r',15)
       .attr('stroke', "black")
       .attr("stroke-width", d => boldIfTerminal(d))
@@ -162,6 +182,15 @@ function update(route, direction, date, time) {
         return 5;
       else
         return 1;
+    }
+
+    function isShuttle(data){
+      if(data.data.attribute.shuttling == true){
+        return false;
+      }
+      else{
+        return true;
+      }
     }
 
 
