@@ -158,10 +158,10 @@ function update(route, direction, date, time) {
     // Determine if the link should be a dashed line (shuttle) or solid line (subway)
     function dash(data){
       routeType = routeTypeMap[data.target.id + 'to' + data.source.id];
-      if(routeType == 1)
-        return 0
-      else 
+      if(routeType == 714)
         return 3
+      else 
+        return 0
       end
     }
 
