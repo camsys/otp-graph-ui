@@ -1,4 +1,4 @@
-var otpApi = window.OTP_config ? window.OTP_config.otpApi : "http://localhost:8080/otp/routers";
+var otpApi = window.OTP_config ? window.OTP_config.otpApi : "http://localhost:8080/otp/routers/";
 
 document.addEventListener("DOMContentLoaded", function(event) { 
 
@@ -25,6 +25,9 @@ function update(route, direction, date, time) {
   var url = otpApi  + "default/patternGraph?routeIds=" + route + "&directionId=" + direction;
   if (date != null && time != null) {
       url += "&date=" + date + "&time=" + time;
+  }
+  if (window.OTP_config && window.OTP_config.otpApiKey) {
+     url += "&apikey=" + window.OTP_config.otpApiKey
   } 
 
   d3.json(url).then((data) => {
