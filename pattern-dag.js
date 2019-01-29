@@ -1,5 +1,7 @@
+var otpApi = window.OTP_config ? window.OTP_config.otpApi : "http://localhost:8080/otp/routers";
 
 document.addEventListener("DOMContentLoaded", function(event) { 
+
   flatpickr(d3.select("#mydatetime").node(), {
     enableTime: true,
     dateFormat: "Y-m-d h:iK",
@@ -20,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 function update(route, direction, date, time) {
   // based on https://jsfiddle.net/ye2xanf9/77/
-  var url = "http://localhost:8080/otp/routers/default/patternGraph?routeIds=" + route + "&directionId=" + direction;
+  var url = otpApi  + "default/patternGraph?routeIds=" + route + "&directionId=" + direction;
   if (date != null && time != null) {
       url += "&date=" + date + "&time=" + time;
   } 
