@@ -39,6 +39,7 @@ function update(route, direction, date, time) {
      .id(d => d.id)
      .parentIds(d => d.successors.map(function(x) { return x.id }))
      (data.nodes)
+     .reverse()
 
     d3.sugiyama()(dag);
 
