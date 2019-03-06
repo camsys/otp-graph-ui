@@ -159,7 +159,7 @@ function update(route, direction, date, time) {
       } )
       .attr('transform', 'translate(0, 0)');
 
-    nodes.append('text').text(d => d.data.attribute.name + ' (' + d.data.attribute.routes + ')').attr('text-anchor', 'right').attr('alignment-baseline', 'middle').attr("x",30);
+    nodes.append('text').text(d => d.data.attribute.name + ' (' + buildRouteStopString(d.data.attribute.routes) + ')').attr('text-anchor', 'right').attr('alignment-baseline', 'middle').attr("x",30);
 
     // Determine if the link should be a dashed line (shuttle) or solid line (subway)
     function dash(data){
@@ -197,6 +197,14 @@ function update(route, direction, date, time) {
       else{
         return true;
       }
+    }
+
+    function buildRouteStopString(data){
+      return_string = " "
+      data.forEach(function(route){
+        return_string += route.route + ':' + route.stop + ' '
+      });
+      return return_string
     }
 
 
