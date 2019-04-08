@@ -32,9 +32,26 @@ function update(route, direction, date, time) {
 
   d3.json(url).then((data) => {
 
+    /////////////////////////
+    // Start error checking 
+    ////////////////////////
+    if(data.nodes.length == 0){
+      alert("No stops available for the selected routes.");
+    }
+
+    try{
+    d3.dratify()
+     .id(d => d.id)
+     .parentIds(d => d.successors.map(function(x) { return x.id }))
+     (data.nodes)
+    }catch(err){
+      alert("These routes do not intersect.");
+    }
+    // End Error Checking
+
     var successorsArray  = [];
     var routeTypeMap  = buildRouteTypeMap(data);
-   
+
     const dag = d3.dratify()
      .id(d => d.id)
      .parentIds(d => d.successors.map(function(x) { return x.id }))
